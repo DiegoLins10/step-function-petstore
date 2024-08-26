@@ -1,0 +1,56 @@
+{
+  "Comment": "Exemplo de Step Function com Map que faz múltiplas requisições POST, trata erros e faz retry",
+  "StartAt": "MapState",
+  "States": {
+    "MapState": {
+      "Type": "Map",
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "INLINE"
+        },
+        "StartAt": "Invoke API",
+        "States": {
+          "Invoke API": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::apigateway:invoke",
+            "Parameters": {
+              "ApiEndpoint": "<ID>.execute-api.us-east-2.amazonaws.com",
+              "Path": "/dev/pets",
+              "Method": "POST",
+              "RequestBody.$": "$.item",
+              "AuthType": "NO_AUTH"
+            },
+            "Retry": [
+              {
+                "ErrorEquals": [
+                  "States.ALL"
+                ],
+                "IntervalSeconds": 2,
+                "MaxAttempts": 3,
+                "BackoffRate": 2
+              }
+            ],
+            "End": true
+          }
+        }
+      },
+      "ItemsPath": "$.itens",
+      "ResultPath": "$.resultados",
+      "MaxConcurrency": 3,
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Next": "FailState"
+        }
+      ],
+      "End": true
+    },
+    "FailState": {
+      "Type": "Fail",
+      "Error": "MapStateError",
+      "Cause": "Ocorreu um erro durante o processamento do MapState."
+    }
+  }
+}
