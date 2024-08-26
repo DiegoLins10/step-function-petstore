@@ -50,6 +50,7 @@ Este exemplo de AWS Step Function usa um estado do tipo `Map` para processar mú
 
 Este Step Function configura uma execução que processa itens em paralelo, fazendo requisições POST para uma API. Ele trata falhas de forma robusta com tentativas de retry e captura qualquer erro que não tenha sido resolvido pelos retries, redirecionando para um estado de falha apropriado.
 
+## INPUT STEP FUNCTION
 ```json
 {
   "itens": [
