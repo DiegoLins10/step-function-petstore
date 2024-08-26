@@ -79,3 +79,5 @@ Este Step Function configura uma execução que processa itens em paralelo, faze
     }
   ]
 }
+```
+
